@@ -67,8 +67,11 @@ def S(b,sc,cr,ep,d,a,bt,pl):
  if q:
   if sc>=bt:return sc
   a=max(a,sc);bs=sc
+ if d>2 and pl and sc>=bt and abs(bt)<9000:
+  v=-S(b[::-1].swapcase(),-sc,frozenset(119-c for c in cr),0,d-3,-bt,1-bt,pl+1)
+  if v>=bt:return v
  ms=gen(b,cr,ep,q)
- ms.sort(key=lambda m:-m[0]-99999*(m[1:]==tm))
+ ms.sort(key=lambda m:-m[0]-99999*(m[1:]==tm)-Y.get(m[1:],0))
  a0=a;bm=0;P.add(k)
  for g,i,j in ms:
   if pl==0 and(i,j)not in R:continue
@@ -77,7 +80,9 @@ def S(b,sc,cr,ep,d,a,bt,pl):
   if v>bs:bs=v;bm=i,j
   if v>a:
    a=v
-   if a>=bt:break
+   if a>=bt:
+    if b[j]=='.':Y[i,j]=min(Y.get((i,j),0)+d*d,90)
+    break
  P.discard(k)
  if bs==-I and not q:
   bs=-29000-d if any(m[0]>5000 for m in gen(b[::-1].swapcase(),(),0,1))else 0
@@ -86,6 +91,7 @@ def S(b,sc,cr,ep,d,a,bt,pl):
 def sq(s):return'abcdefgh'[s%10-1]+str(10-s//10)
 def fs(x):return 21+(8-int(x[1]))*10+'abcdefgh'.find(x[0])
 T={}
+Y={}
 H=set()
 while 1:
  g=json.load(U.urlopen(U.Request(os.environ["MAKEFUN_ENV_URL"]+"/game",b'{}',{"content-type":"application/json"})))
@@ -103,7 +109,7 @@ while 1:
    x=fs(m[:2]);y=fs(m[2:4]);R|={(x,y)if w else(119-x,119-y)}
   if not w:b=b[::-1].swapcase();cr=frozenset(119-c for c in cr);ep=119-ep if ep else 0
   if len(T)>400000:T={}
-  P=set(H);N=0;bm=next(iter(R))
+  Y={};P=set(H);N=0;bm=next(iter(R))
   try:
    for d in range(1,30):
     S(b,0,cr,ep,d,-I,I,0)
