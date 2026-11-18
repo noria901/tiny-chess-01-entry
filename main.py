@@ -4,13 +4,14 @@ I=30000
 D={'N':(-21,-19,-12,-8,8,12,19,21),'B':(-11,-9,9,11),'R':(-10,-1,1,10)}
 D['Q']=D['K']=D['B']+D['R']
 V=dict(P=100,N=320,B=330,R=500,Q=900,K=10000)
-def pt(p,e=0):
+def pt(p,f):
  t=[0]*120
  for s in range(21,99):
   r=9-s//10;c=s%10-1;m=min(r,7-r)+min(c,7-c)
-  t[s]=V[p]+dict(P=(0,0,3,9,21,42,80,0)[r]+(2<c<5)*(r>1)*6+e*r*r,N=12*m-36,B=6*m-18,R=(r==6)*20+m,Q=2*m,K=(10*m-30)if e else 6*abs(2*c-7)-24*r)[p]
+  x=dict(P=(0,0,3,9,21,42,80,0)[r]+(2<c<5)*(r>1)*6,N=12*m-36,B=6*m-18,R=(r==6)*20+m,Q=2*m,K=6*abs(2*c-7)-24*r)[p]
+  t[s]=V[p]+(x*f+dict(P=x+r*r,K=10*m-30).get(p,x)*(8-f))//8
  return t
-PS={p:pt(p)for p in V}
+PS={}
 def gen(b,cr,ep,q):
  M=[]
  for i in range(21,99):
@@ -98,7 +99,8 @@ def think(b,cr,ep,r,H):
  global T,Y,P,N,BM,R
  R=r
  if len(T)>400000:T={}
- e=sum(V[c]for c in b.upper()if c in'NBRQ')<2400;PS['K']=pt('K',e);PS['P']=pt('P',e)
+ f=min(8,(sum(V[c]for c in b.upper()if c in"NBRQ")-1000)//500)
+ for p in V:PS[p]=pt(p,f)
  Y={};P=set(H);N=0;BM=next(iter(R));sv=0
  try:
   for d in range(1,30):
@@ -124,7 +126,7 @@ while 1:
   for r in f[0].split('/'):b+=' '+''.join(c if c>'9'else'.'*int(c)for c in r)+' '
   b+=' '*20
   w=f[1]=='w'
-  cr=frozenset({'K':98,'Q':91,'k':28,'q':21}[c]for c in f[2]if c!='-')
+  cr=frozenset((98,91,28,21)['KQkq'.find(c)]for c in f[2]if c!='-')
   ep=fs(f[3])if f[3]!='-'else 0
   R=set()
   for m in g["legal_moves"]:
