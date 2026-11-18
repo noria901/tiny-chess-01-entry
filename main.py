@@ -111,6 +111,7 @@ def think(b,cr,ep,r,H):
    sv=lo
    if lo>5000:break
  except E:pass
+ H.add((b,cr));H.add(mk(b,cr,ep,*BM)[:2])
  return BM
 def Z(p,o):return json.load(U.urlopen(U.Request(os.environ["MAKEFUN_ENV_URL"]+p,json.dumps(o).encode(),{"content-type":"application/json"})))
 H=set()
@@ -130,7 +131,6 @@ while 1:
    x=fs(m[:2]);y=fs(m[2:4]);R|={(x,y)if w else(119-x,119-y)}
   if not w:b=b[::-1].swapcase();cr=frozenset(119-c for c in cr);ep=119-ep if ep else 0
   i,j=think(b,cr,ep,R,H)
-  H.add((b,cr))
   u='q'if b[i]=='P'and j<30 else''
   if not w:i=119-i;j=119-j
   g=Z("/move",{"game":g["game"],"move":sq(i)+sq(j)+u})
