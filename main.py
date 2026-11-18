@@ -8,7 +8,7 @@ def pt(p,e=0):
  t=[0]*120
  for s in range(21,99):
   r=9-s//10;c=s%10-1;m=min(r,7-r)+min(c,7-c)
-  t[s]=V[p]+dict(P=6*r+(r>0)*(m-3)*2+e*r*r,N=10*m-30,B=5*m-15,R=(r==6)*15+m,Q=2*m,K=(10*m-30)if e else 6*abs(2*c-7)-20*r)[p]
+  t[s]=V[p]+dict(P=(0,0,3,9,21,42,80,0)[r]+(2<c<5)*(r>1)*6+e*r*r,N=12*m-36,B=6*m-18,R=(r==6)*20+m,Q=2*m,K=(10*m-30)if e else 6*abs(2*c-7)-24*r)[p]
  return t
 PS={p:pt(p)for p in V}
 def gen(b,cr,ep,q):
@@ -52,7 +52,7 @@ def mk(b,cr,ep,i,j):
    while t[s]=='.':s+=d
    t[s]='.';t[i+d]='R'
  return''.join(t[::-1]).swapcase(),frozenset(119-c for c in cr if c!=i and c!=j),129-i if p=='P'and i-j==20 else 0
-class E(Exception):0
+E=Exception
 def S(b,sc,cr,ep,d,a,bt,pl):
  global N,BM
  N+=1
@@ -68,7 +68,7 @@ def S(b,sc,cr,ep,d,a,bt,pl):
  if q:
   if sc>=bt:return sc
   a=max(a,sc);bs=sc
- if d>2 and pl and sc>=bt and abs(bt)<9000:
+ if d>2 and pl and sc>=bt:
   v=-S(b[::-1].swapcase(),-sc,frozenset(119-c for c in cr),0,d-3,-bt,1-bt,pl+1)
   if v>=bt:return v
  ms=gen(b,cr,ep,q)
