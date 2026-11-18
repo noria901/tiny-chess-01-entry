@@ -1,15 +1,15 @@
 import json,os,sys,urllib.request as U
-L=int(os.environ.get("NODES",40000))
+L=int(os.environ.get("NODES",100000))
 I=30000
 D={'N':(-21,-19,-12,-8,8,12,19,21),'B':(-11,-9,9,11),'R':(-10,-1,1,10),'Q':(-11,-9,9,11,-10,-1,1,10),'K':(-11,-9,9,11,-10,-1,1,10)}
 V=dict(P=100,N=320,B=330,R=500,Q=900,K=10000)
-PS={}
-for p in V:
+def pt(p,e=0):
  t=[0]*120
  for s in range(21,99):
   r=9-s//10;c=s%10-1;m=min(r,7-r)+min(c,7-c)
-  t[s]=V[p]+dict(P=6*r+(r>0)*(m-3)*2,N=10*m-30,B=5*m-15,R=(r==6)*15+m,Q=2*m,K=6*abs(2*c-7)-20*r)[p]
- PS[p]=t
+  t[s]=V[p]+dict(P=6*r+(r>0)*(m-3)*2+e*r*r,N=10*m-30,B=5*m-15,R=(r==6)*15+m,Q=2*m,K=(10*m-30)if e else 6*abs(2*c-7)-20*r)[p]
+ return t
+PS={p:pt(p)for p in V}
 def gen(b,cr,ep,q):
  M=[]
  for i in range(21,99):
@@ -109,6 +109,7 @@ while 1:
    x=fs(m[:2]);y=fs(m[2:4]);R|={(x,y)if w else(119-x,119-y)}
   if not w:b=b[::-1].swapcase();cr=frozenset(119-c for c in cr);ep=119-ep if ep else 0
   if len(T)>400000:T={}
+  e=sum(V[c]for c in b.upper()if c in'NBRQ')<2400;PS['K']=pt('K',e);PS['P']=pt('P',e)
   Y={};P=set(H);N=0;bm=next(iter(R))
   try:
    for d in range(1,30):
