@@ -14,9 +14,8 @@ def pt(p,f):
 PS={}
 def gen(b,cr,ep,q):
  M=[]
- for i in range(21,99):
-  p=b[i]
-  if not p.isupper():continue
+ for i,p in enumerate(b[21:99],21):
+  if p not in'PNBRQK':continue
   T=PS[p]
   if p=='P':
    for j in(i-10,i-20):
@@ -24,13 +23,13 @@ def gen(b,cr,ep,q):
     if not q or j<30:M+=[(T[j]-T[i]+(PS['Q'][j]-T[j])*(j<30),i,j)]
    for j in(i-11,i-9):
     c=b[j]
-    if c.islower()or j==ep:M+=[(T[j]-T[i]+PS[c.upper()if c!='.'else'P'][119-j-10*(c=='.')]+(PS['Q'][j]-T[j])*(j<30),i,j)]
+    if c in'pnbrqk'or j==ep:M+=[(T[j]-T[i]+PS[c.upper()if c!='.'else'P'][119-j-10*(c=='.')]+(PS['Q'][j]-T[j])*(j<30),i,j)]
   else:
    for d in D[p]:
     j=i
     while 1:
      j+=d;c=b[j]
-     if c==' 'or c.isupper():break
+     if c in' PNBRQK':break
      if c!='.'or not q:M+=[(T[j]-T[i]+(PS[c.upper()][119-j]if c!='.'else 0),i,j)]
      if c!='.'or p in'NK':break
  if not q:
