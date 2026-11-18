@@ -53,7 +53,7 @@ def mk(b,cr,ep,i,j):
  return''.join(t[::-1]).swapcase(),frozenset(119-c for c in cr if c!=i and c!=j),129-i if p=='P'and i-j==20 else 0
 class E(Exception):0
 def S(b,sc,cr,ep,d,a,bt,pl):
- global N
+ global N,BM
  N+=1
  if N>L:raise E
  if sc<-5000:return-I
@@ -84,6 +84,7 @@ def S(b,sc,cr,ep,d,a,bt,pl):
     if b[j]=='.':Y[i,j]=min(Y.get((i,j),0)+d*d,90)
     break
  P.discard(k)
+ if pl==0 and bs>=bt:BM=bm
  if bs==-I and not q:
   bs=-29000-d if any(m[0]>5000 for m in gen(b[::-1].swapcase(),(),0,1))else 0
  if not q:T[k]=d,bs,(bs>=bt)-(bs<=a0),bm
@@ -110,12 +111,20 @@ while 1:
   if not w:b=b[::-1].swapcase();cr=frozenset(119-c for c in cr);ep=119-ep if ep else 0
   if len(T)>400000:T={}
   e=sum(V[c]for c in b.upper()if c in'NBRQ')<2400;PS['K']=pt('K',e);PS['P']=pt('P',e)
-  Y={};P=set(H);N=0;bm=next(iter(R))
+  Y={};P=set(H);N=0;BM=next(iter(R))
   try:
+   sv=0
    for d in range(1,30):
-    S(b,0,cr,ep,d,-I,I,0)
-    bm=T[b,cr][3]
+    lo,hi=-3000,3000;z=sv;s=12
+    while lo<hi-4:
+     v=S(b,0,cr,ep,d,z-1,z,0)
+     if v<z:hi=v
+     else:lo=v
+     s*=2;z=(lo+hi+1)//2 if lo>-3000 and hi<3000 else max(lo+1,hi-s)if lo<=-3000 else min(hi,lo+s)
+    sv=lo
+    if lo>5000:break
   except E:pass
+  bm=BM
   H.add((b,cr))
   i,j=bm
   if b[i]=='P'and j<30:u='q'
