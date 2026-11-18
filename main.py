@@ -1,7 +1,8 @@
-import json,os,sys,urllib.request as U
-L=int(os.environ.get("NODES",100000))
+import json,os,urllib.request as U
+L=100000
 I=30000
-D={'N':(-21,-19,-12,-8,8,12,19,21),'B':(-11,-9,9,11),'R':(-10,-1,1,10),'Q':(-11,-9,9,11,-10,-1,1,10),'K':(-11,-9,9,11,-10,-1,1,10)}
+D={'N':(-21,-19,-12,-8,8,12,19,21),'B':(-11,-9,9,11),'R':(-10,-1,1,10)}
+D['Q']=D['K']=D['B']+D['R']
 V=dict(P=100,N=320,B=330,R=500,Q=900,K=10000)
 def pt(p,e=0):
  t=[0]*120
@@ -93,9 +94,28 @@ def sq(s):return'abcdefgh'[s%10-1]+str(10-s//10)
 def fs(x):return 21+(8-int(x[1]))*10+'abcdefgh'.find(x[0])
 T={}
 Y={}
+def think(b,cr,ep,r,H):
+ global T,Y,P,N,BM,R
+ R=r
+ if len(T)>400000:T={}
+ e=sum(V[c]for c in b.upper()if c in'NBRQ')<2400;PS['K']=pt('K',e);PS['P']=pt('P',e)
+ Y={};P=set(H);N=0;BM=next(iter(R));sv=0
+ try:
+  for d in range(1,30):
+   lo,hi=-3000,3000;z=sv;s=12
+   while lo<hi-4:
+    v=S(b,0,cr,ep,d,z-1,z,0)
+    if v<z:hi=v
+    else:lo=v
+    s*=2;z=(lo+hi+1)//2 if lo>-3000 and hi<3000 else max(lo+1,hi-s)if lo<=-3000 else min(hi,lo+s)
+   sv=lo
+   if lo>5000:break
+ except E:pass
+ return BM
+def Z(p,o):return json.load(U.urlopen(U.Request(os.environ["MAKEFUN_ENV_URL"]+p,json.dumps(o).encode(),{"content-type":"application/json"})))
 H=set()
 while 1:
- g=json.load(U.urlopen(U.Request(os.environ["MAKEFUN_ENV_URL"]+"/game",b'{}',{"content-type":"application/json"})))
+ g=Z("/game",{})
  if g["status"]=="done":break
  while g["status"]=="your_move":
   f=g["fen"].split()
@@ -109,26 +129,9 @@ while 1:
   for m in g["legal_moves"]:
    x=fs(m[:2]);y=fs(m[2:4]);R|={(x,y)if w else(119-x,119-y)}
   if not w:b=b[::-1].swapcase();cr=frozenset(119-c for c in cr);ep=119-ep if ep else 0
-  if len(T)>400000:T={}
-  e=sum(V[c]for c in b.upper()if c in'NBRQ')<2400;PS['K']=pt('K',e);PS['P']=pt('P',e)
-  Y={};P=set(H);N=0;BM=next(iter(R))
-  try:
-   sv=0
-   for d in range(1,30):
-    lo,hi=-3000,3000;z=sv;s=12
-    while lo<hi-4:
-     v=S(b,0,cr,ep,d,z-1,z,0)
-     if v<z:hi=v
-     else:lo=v
-     s*=2;z=(lo+hi+1)//2 if lo>-3000 and hi<3000 else max(lo+1,hi-s)if lo<=-3000 else min(hi,lo+s)
-    sv=lo
-    if lo>5000:break
-  except E:pass
-  bm=BM
+  i,j=think(b,cr,ep,R,H)
   H.add((b,cr))
-  i,j=bm
-  if b[i]=='P'and j<30:u='q'
-  else:u=''
+  u='q'if b[i]=='P'and j<30 else''
   if not w:i=119-i;j=119-j
-  g=json.load(U.urlopen(U.Request(os.environ["MAKEFUN_ENV_URL"]+"/move",json.dumps({"game":g["game"],"move":sq(i)+sq(j)+u}).encode(),{"content-type":"application/json"})))
+  g=Z("/move",{"game":g["game"],"move":sq(i)+sq(j)+u})
  H=set()
