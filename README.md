@@ -4,7 +4,7 @@
 [![rank](https://make.fun/badge/tiny-chess-01/noria901/tiny-chess-01-entry/rank.svg)](https://make.fun/bounty/tiny-chess-01/leaderboard?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 [![reward](https://make.fun/badge/tiny-chess-01/noria901/tiny-chess-01-entry/reward.svg)](https://make.fun/bounty/tiny-chess-01?utm_source=github&utm_medium=readme&utm_campaign=tiny-chess-01)
 
-A chess engine in 2,312 bytes of Python (standard library only), entered in
+A chess engine in 2,699 bytes of Python (standard library only), entered in
 make.fun's "Build the strongest chess engine in 4 KB of Python" bounty.
 
 - 10x12 string mailbox board, always viewed from the side to move
